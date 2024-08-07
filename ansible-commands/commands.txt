@@ -1,0 +1,97 @@
+
+ Ansible : 
+  
+  On controller : 
+  
+  #add repo for ansible 
+  
+  sudo apt update
+$ sudo apt install software-properties-common
+$ sudo add-apt-repository --yes --update ppa:ansible/ansible
+$ sudo apt install ansible
+
+ansible --version
+
+
+vim /etc/ansible/hosts  inventry file : managed host information
+
+root@ansible-controller:~# ssh-keygen
+root@ansible-controller:~# ssh-copy-id root@192.168.73.146
+-----------------------------------------
+The basic syntax of an ad-hoc command in Ansible is as follows:
+
+ansible <inventory> -m <module_name> -a "<arguments>"
+ansible [-i INVENTORY] [server] [-m MODULE] {-a MODULE_OPTIONS}
+
+ansible <group> -m <module> -a <arguments>
+
+
+Check the invenrty: 
+ansible-inventory --list -y
+
+
+ansible all -m ping  check the status
+ansible all -m command -a "free -m"       run the command on all hosts
+
+ansible managed-host  -m command -a "apt-get install zip -y"
+ansible target-hosts -m copy -a "src=/local/path dest=/remote/path"
+
+ scp mediplus-lite.zip root@192.168.73.146:/home        (without ansible we can copy file )
+ 
+ 
+ ansible local -m apt -a "name=git state=absent"      (ubuntu)
+ ansible local -m command -a "apt-get remove git"
+ 
+ 
+ansible local -m dnf -a "name=git state=absent"   (redhat)
+
+  907  ansible all -m command -a "df -h"
+  908  ansible local -m apt -a "name=git state=absent"
+  909  git
+  910  clear
+  911  ansible managed-host -m dnf -a "name=git state=absent"
+  912  ansible managed-host -m dnf -a "name=git-core state=absent"
+  913  ansible managed-host -m dnf -a "name=git-core state=present"
+  914  ansible managed-host -m dnf -a "name=git state=present"
+  
+  
+  ansible all -m file -a "path=/path/to/directory state=directory mode=0755"
+  
+  ansible webservers -m file -a "path=/tmp/example.txt state=touch"
+  
+  
+  
+file Management : 
+ansible all -m file -a "path=/path/to/directory state=directory mode=0755"
+
+ansible webservers -m file -a "path=/tmp/example_dir state=absent"
+ansible webservers -m file -a "path=/tmp/example.txt state=absent"
+ansible webservers -m file -a "path=/tmp/example.txt state=touch"
+
+
+package Management 
+
+ansible all -m apt -a "name=nginx state=present"
+ansible all -m apt -a "name=git state=present"
+ansible all -m yum -a "name=git state=present"
+
+
+service : 
+ansible all -m service -a "name=nginx state=restarted"
+
+
+
+User and group  :
+
+ansible all -m user -a "name=john state=present"
+
+
+Check if package is installed & update it
+
+# ansible <group> -m yum -a “name=httpd state=latest”
+Check if package is installed & don’t update it
+
+# ansible <group> -m yum -a “name= httpd state=present”
+ansible <group> -m copy -a “src=/home/ansible dest=/tmp/home”
+
+ansible server1 -m copy -a "src=~/demo.txt dest=/tmp/demo-2.txt remote_src=yes"

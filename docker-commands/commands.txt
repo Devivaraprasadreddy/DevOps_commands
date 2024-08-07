@@ -1,0 +1,57 @@
+#docker installation on ubuntu machine 
+apt-get update
+sudo apt install apt-transport-https ca-certificates curl software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
+sudo apt install docker-ce
+docker --version
+docker info
+
+------------------------------------------------------------------------
+
+docker pull httpd:latest
+
+docker pull 342353/my-apache-images:latest
+
+docker run -d --name container1 -p 80:80 342353/my-apache-images:latest  (run container using images)
+
+
+------------------------------------------------------------------------
+
+#How to access container
+
+docker exec -it containerid bash
+
+#How to create custom images
+vim Dockerfile
+
+-----------------------------------------------------------------------
+#docker volume
+docker run -d --name mycon1 -p 82:80 -v /home/myvolume:/usr/local/apache2/htdocs/ httpd:latest
+
+-----------------------------------------------------------------------
+#docker named volume
+docker volume ls
+docker volume create vol-name 
+#docker network 
+docker network ls
+# docekr compose (how to write compose file for docker-compose)
+docker-compose.yml
+ docker-compose up -d
+
+-----------------------------------------------------------------------
+docker run -d --name mytomcat -v /mnt/myvolume:/usr/local/tomcat/webapps -p 8080:8080 tomcat:latest
+wget https://tomcat.apache.org/tomcat-7.0-doc/appdev/sample/sample.war
+
+
+docker build -t my-tomcat-images .
+ docker run -d --name mytomcat -p 8081:8080 my-tomcat-images:latest
+
+-----------------------------------------------------------------------
+
+-----------------------------------------------------------------------
+
+-----------------------------------------------------------------------
+
+
+-----------------------------------------------------------------------

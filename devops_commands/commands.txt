@@ -1,0 +1,1113 @@
+4hello 
+
+
+docker notes
+
+
+#docker installation on ubuntu machine 
+apt-get update
+sudo apt install apt-transport-https ca-certificates curl software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
+sudo apt install docker-ce
+docker --version
+docker info
+
+docker pull httpd:latest
+
+docker pull 342353/my-apache-images:latest
+
+docker run -d --name container1 -p 80:80 342353/my-apache-images:latest  (run container using images)
+
+
+#How to access container
+
+docker exec -it containerid bash
+
+#How to create custom images
+vim Dockerfile
+
+# Use an official Apache base image
+FROM httpd:latest
+
+# Set the working directory to /usr/local/apache2/htdocs/
+WORKDIR /usr/local/apache2/htdocs/
+
+# Copy the content of the local src directory to the working directory
+
+
+# Expose port 80 to the outside world
+EXPOSE 80
+
+# Command to start Apache when the container runs
+CMD ["httpd", "-D", "FOREGROUND"]
+
+
+
+#docker volume
+
+
+docker run -d --name mycon1 -p 82:80 -v /home/myvolume:/usr/local/apache2/htdocs/ httpd:latest
+
+
+#docker named volume
+docker volume ls
+docker volume create vol-name 
+
+#docker network 
+
+docker network ls
+
+
+# docekr compose (how to write compose file for docker-compose)
+
+docker-compose.yml
+
+Jenkins installation on docker
+
+version: '3'
+services:
+  jenkins:
+    image: jenkins/jenkins
+    container_name: jenkins
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    volumes:
+      - ./jenkins_home:/var/jenkins_home
+    networks:
+      - jenkins-net
+
+networks:
+  jenkins-net:
+  
+  
+  docker-compose up -d
+  
+  ---------------------------------------------------------------------------------------------------------------------
+  version: '3'
+services:
+  jenkins:
+    image: jenkins/jenkins
+    container_name: jenkins
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    volumes:
+      - jenkins_home:/var/jenkins_home
+    networks:
+      - jenkins-net
+
+networks:
+  jenkins-net:
+volumes:
+  jenkins_home:
+  
+  
+  
+  
+# run java application on docker
+
+docker run -d --name mytomcat -v /mnt/myvolume:/usr/local/tomcat/webapps -p 8080:8080 tomcat:latest
+wget https://tomcat.apache.org/tomcat-7.0-doc/appdev/sample/sample.war
+
+# Docker file
+FROM tomcat:latest
+
+WORKDIR /usr/local/tomcat/
+
+COPY ./sample.war ./webapps
+
+EXPOSE 8080
+
+# Start Tomcat Server
+CMD ["catalina.sh","run"]
+
+docker build -t my-tomcat-images .
+ docker run -d --name mytomcat -p 8081:8080 my-tomcat-images:latest
+
+
+  
+---------------------------------------------------------------------------------------------------------------------------git
+  
+  
+git config --global user.name "naveen saini"
+git config --global user.email "naveensainiece@gmail.com"
+
+git clone -b naveen https://gitlab.com/naveen51/test.git
+
+git checkout -b branch-name
+
+
+
+#Create a new repository
+git clone https://gitlab.com/naveen51/naveen.git
+cd naveen
+git switch --create main
+touch README.md
+git add README.md
+git commit -m "add README"
+git push --set-upstream origin main
+
+
+
+#Push an existing folder
+cd existing_folder
+git init --initial-branch=main
+git remote add origin https://gitlab.com/naveen51/naveen.git
+git add .
+git commit -m "Initial commit"
+git push --set-upstream origin main
+
+#
+Push an existing Git repository
+cd existing_repo
+git remote rename origin old-origin
+git remote add origin https://gitlab.com/naveen51/naveen.git
+git push --set-upstream origin --all
+git push --set-upstream origin --tags~
+
+
+
+git branch 
+git branch -a
+
+git checkout branch name
+
+git fetch 
+git pull 
+
+
+
+
+
+ 115  git clone https://gitlab.com/naveen51/test.git
+  116  cd test
+  117  pwd
+  118  git branch
+  119  git checkout -b naveen
+  120  ls
+  121  vim naveen.txt
+  122  git add .
+  123  git add .
+  124  git commit -m "naveen added a file naveen.txt"
+  125  git push origin naveen
+  126  history
+  
+  
+  
+  
+  -----------------------------------------------------------------------------------------------
+  
+  Ansible : 
+  
+  On controller : 
+  
+  #add repo for ansible 
+  
+  sudo apt update
+$ sudo apt install software-properties-common
+$ sudo add-apt-repository --yes --update ppa:ansible/ansible
+$ sudo apt install ansible
+
+ansible --version
+
+
+vim /etc/ansible/hosts  inventry file : managed host information
+
+root@ansible-controller:~# ssh-keygen
+root@ansible-controller:~# ssh-copy-id root@192.168.73.146
+
+
+
+
+The basic syntax of an ad-hoc command in Ansible is as follows:
+
+ansible <inventory> -m <module_name> -a "<arguments>"
+ansible [-i INVENTORY] [server] [-m MODULE] {-a MODULE_OPTIONS}
+
+ansible <group> -m <module> -a <arguments>
+
+
+Check the invenrty: 
+ansible-inventory --list -y
+
+
+ansible all -m ping  check the status
+ansible all -m command -a "free -m"       run the command on all hosts
+
+ansible managed-host  -m command -a "apt-get install zip -y"
+ansible target-hosts -m copy -a "src=/local/path dest=/remote/path"
+
+ scp mediplus-lite.zip root@192.168.73.146:/home        (without ansible we can copy file )
+ 
+ 
+ ansible local -m apt -a "name=git state=absent"      (ubuntu)
+ ansible local -m command -a "apt-get remove git"
+ 
+ 
+ansible local -m dnf -a "name=git state=absent"   (redhat)
+
+  907  ansible all -m command -a "df -h"
+  908  ansible local -m apt -a "name=git state=absent"
+  909  git
+  910  clear
+  911  ansible managed-host -m dnf -a "name=git state=absent"
+  912  ansible managed-host -m dnf -a "name=git-core state=absent"
+  913  ansible managed-host -m dnf -a "name=git-core state=present"
+  914  ansible managed-host -m dnf -a "name=git state=present"
+  
+  
+  ansible all -m file -a "path=/path/to/directory state=directory mode=0755"
+  
+  ansible webservers -m file -a "path=/tmp/example.txt state=touch"
+  
+  
+  
+file Management : 
+ansible all -m file -a "path=/path/to/directory state=directory mode=0755"
+
+ansible webservers -m file -a "path=/tmp/example_dir state=absent"
+ansible webservers -m file -a "path=/tmp/example.txt state=absent"
+ansible webservers -m file -a "path=/tmp/example.txt state=touch"
+
+
+package Management 
+
+ansible all -m apt -a "name=nginx state=present"
+ansible all -m apt -a "name=git state=present"
+ansible all -m yum -a "name=git state=present"
+
+
+service : 
+ansible all -m service -a "name=nginx state=restarted"
+
+
+
+User and group  :
+
+ansible all -m user -a "name=john state=present"
+
+
+Check if package is installed & update it
+
+# ansible <group> -m yum -a “name=httpd state=latest”
+Check if package is installed & don’t update it
+
+# ansible <group> -m yum -a “name= httpd state=present”
+ansible <group> -m copy -a “src=/home/ansible dest=/tmp/home”
+
+ansible server1 -m copy -a "src=~/demo.txt dest=/tmp/demo-2.txt remote_src=yes"
+
+
+
+
+what is playbook :  run multiple tasks commad on remote machine
+
+# installation of apache2 on ubunu
+--
+- hosts: all
+  tasks:
+    - name: Install the Apache web server
+      apt:
+        name: apache2
+        state: present
+    - name: Configure the Apache web server
+      service:
+        name: apache2
+        state: started
+        enabled: yes
+    - name: Copy the index.html file to the web root
+      copy:
+        src: index.html
+        dest: /var/www/html/index.html
+    
+# removing apache on ubuntu using playbook
+
+---
+- hosts: cloud
+  tasks:
+    - name: stop the Apache web server
+      service:
+        name: apache2
+        state: stopped
+    - name: Uninstall the Apache web server
+      apt:
+        name: apache2
+        state: absent
+    - name: Copy the index.html file to the web root
+      file:
+        path: /var/www/html/index.html
+        state: absent
+~
+
+
+
+
+
+-------------------------------------------------------
+
+Create a playbook file named install_docker.yml
+
+---
+- name: Install Docker on Ubuntu
+  hosts: remote
+  become: yes
+
+  tasks:
+    - name: Update the apt package index
+      apt:
+        update_cache: yes
+        force_apt_get: yes
+
+    - name: Install packages to allow apt to use a repository over HTTPS
+      apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+        state: present
+
+    - name: Add Docker’s official GPG key
+      command: curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /tmp/docker.gpg
+
+    - name: Set up the Docker stable repository
+      apt_repository:
+        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable
+        state: present
+
+    - name: Update the apt package index after adding Docker repo
+      apt:
+        update_cache: yes
+        force_apt_get: yes
+
+    - name: Install Docker
+      apt:
+        name: docker-ce
+        state: present
+
+    - name: Ensure Docker is started and enabled
+      systemd:
+        name: docker
+        state: started
+        enabled: yes
+
+        
+
+
+
+#Ansible variable playbook
+
+/etc/ansible/hosts
+server1
+server2 http_port=8080 pkg=httpd
+server3
+
+---
+ - name: Verifying host variable
+   hosts: server2
+   tasks:
+   - name: Testing first variable (http_port)
+     debug:
+       msg: "The HTTP PORT is {{ http_port }}"
+   - name: Testing second variable (pkg)
+     debug:
+       msg: "The package name is {{ pkg }}"
+        
+        
+
+---
+ - hosts: server2
+   vars:
+     port_no: 80
+     pkg_name: httpd
+
+
+   gather_facts: no
+   tasks:
+   - debug:
+       msg:
+        - "The value of port is {{ port_no }}"
+        - "The value of pkg is {{ pkg_name }}"
+        - "The value of hostname is {{ inventory_hostname }}"
+        - "Ansible version is {{ ansible_version }}"
+        
+        
+
+
+# ansible vars file
+
+---
+- hosts: all
+
+  vars_files:
+    - vars/test.yml
+
+  tasks:
+    - name: copy file
+      synchronize:
+        src: "{{ source_folder }}/a.txt"
+        dest: "{{ dest_folder }}"
+
+
+
+test.yml
+---
+
+source_folder: "test"
+dest_folder: "/home/etools"
+
+
+
+
+
+
+
+
+
+--------------------------------------aws cli and IAM service--------------------------------------
+
+what is aws cli : command line interface to mamage aws account 
+
+IAM service :  access for aws services and resource
+
+resource : which you create in the service like ec2 instance in ec2 service 
+
+create a IAM user and create access id and secret access key 
+
+install aws cli on windows machine or mac
+
+aws --version
+
+aws configure
+
+
+EC2 command: 
+aws ec2 describe-instances
+aws ec2 start-instances --instance-ids i-1234567890abcdef0
+aws ec2 stop-instances --instance-ids i-1234567890abcdef0
+aws ec2 terminate-instances --instance-ids i-1234567890abcdef0
+aws ec2 run-instances --image-id ami-053b0d53c279acc90 --instance-type t2.micro --key-name my-key--security-group-ids sg-0cf6020b80ee393dc --subnet-id subnet-04a1f07fede2d4cce
+
+aws ec2 run-instances --image-id ami-0c7217cdde317cfec --instance-type t2.micro --key-name my-new-aws --security-group-ids sg-0cf6020b80ee393dc  --subnet-id subnet-04a1f07fede2d4cce
+
+
+IAM command: 
+aws iam delete-user --user-name user_to_delete
+
+aws iam create-user --user-name new_user
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---------------------------------jenkins installation on ubuntu---------------------------------
+
+Jenkins installation on docker envirnmet 
+
+create docekr compose file file 
+
+docker-compose.ym
+
+version: '3'
+services:
+  jenkins:
+    image: jenkins/jenkins
+    container_name: jenkins
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    volumes:
+      - jenkins_home:/var/jenkins_home
+    networks:
+      - jenkins-net
+
+networks:
+  jenkins-net:
+volumes:
+  jenkins_home:
+
+  
+  
+run the command docker-compose up -d
+
+
+docker logs container-name
+  
+#intall jenkins on code ubuntu machine
+
+setup : install jdk
+
+sudo apt update
+sudo apt install default-jre
+sudo apt install default-jdk
+wget -q -O - https://pkg.jenkins.io/debian-stable/jenkins.io.key |sudo gpg --dearmor -o /usr/share/keyrings/jenkins.gpg
+sudo sh -c 'echo deb [signed-by=/usr/share/keyrings/jenkins.gpg] http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
+
+sudo apt update
+
+sudo apt install jenkins
+
+sudo systemctl start jenkins.service
+sudo systemctl status jenkins
+
+
+
+
+
+
+
+pipeline : 
+
+pipeline {
+    agent any
+
+    parameters {
+        choice(name: 'BRANCH_NAME', choices: ['main', 'develop', 'feature'], description: 'Choose the branch to deploy')
+    }
+
+    environment {
+        REMOTE_HOST = '192.168.73.146'
+        REMOTE_USER = 'root'
+        //REMOTE_KEY = 'your-private-key-credential-id'
+        REMOTE_PATH = '/var/www/html'
+        GIT_CREDENTIALS_ID = '369eff06-5c27-4e0b-8116-597a3d04a3af'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                script {
+                    // Checkout the specified branch using Git credentials
+                    checkout([$class: 'GitSCM', branches: [[name: "${params.BRANCH_NAME}"]],
+                              userRemoteConfigs: [[url: 'https://gitlab.com/naveen51/neogym.git', credentialsId: "${env.GIT_CREDENTIALS_ID}"]]])
+                }
+            }
+        }
+
+        stage('Deploy to Apache') {
+            steps {
+                script {
+                    // Copy files to the remote Apache server
+                        sh """
+                        rsync -avz  --delete ${WORKSPACE}/ ${env.REMOTE_USER}@${env.REMOTE_HOST}:${env.REMOTE_PATH}
+                        """
+                    
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Deployment completed.'
+        }
+    }
+}
+
+
+
+
+
+---------------------------------- pipeline with scm---------------------------
+
+
+pipeline {
+    agent any
+
+    parameters {
+        choice(name: 'BRANCH_NAME', choices: ['main', 'develop', 'feature'], description: 'Choose the branch to deploy')
+    }
+
+    environment {
+        REMOTE_HOST = '192.168.73.146'
+        REMOTE_USER = 'root'
+        //REMOTE_KEY = 'your-private-key-credential-id'
+        REMOTE_PATH = '/var/www/html'
+        GIT_CREDENTIALS_ID = '369eff06-5c27-4e0b-8116-597a3d04a3af'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                script {
+                    // Checkout the specified branch using Git credentials
+                    checkout([$class: 'GitSCM', branches: [[name: "${params.BRANCH_NAME}"]],
+                              userRemoteConfigs: [[url: 'https://gitlab.com/naveen51/neogym.git', credentialsId: "${env.GIT_CREDENTIALS_ID}"]], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: "source-code"]]])
+                }
+            }
+        }
+
+        stage('Deploy to Apache') {
+            steps {
+                script {
+                    // Copy files to the remote Apache server
+                        sh """
+                        rsync -avz -e "ssh" --exclude 'Jenkinsfile' --exclude 'ansible' --delete ${WORKSPACE}/ ${env.REMOTE_USER}@${env.REMOTE_HOST}:${env.REMOTE_PATH}
+                        """
+                    
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Deployment completed.'
+        }
+    }
+}
+
+
+
+---------------------------------------pipelinn with scm with defferent branch------
+
+
+pipeline {
+    agent any
+
+    parameters {
+        choice(name: 'BRANCH_NAME', choices: ['main', 'develop', 'feature', 'devops'], description: 'Choose the branch to deploy')
+    }
+
+    environment {
+        REMOTE_HOST = '192.168.73.146'
+        REMOTE_USER = 'root'
+        //REMOTE_KEY = 'your-private-key-credential-id'
+        REMOTE_PATH = '/var/www/html'
+        GIT_CREDENTIALS_ID = '369eff06-5c27-4e0b-8116-597a3d04a3af'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                script {
+                    // Checkout the specified branch using Git credentials
+                    checkout([$class: 'GitSCM', branches: [[name: "${params.BRANCH_NAME}"]],
+                              userRemoteConfigs: [[url: 'https://gitlab.com/naveen51/neogym.git', credentialsId: "${env.GIT_CREDENTIALS_ID}"]], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: "source-code"]]])
+                }
+            }
+        }
+
+        stage('Deploy to Apache') {
+            steps {
+                script {
+                    // Copy files to the remote Apache server
+                        sh """
+                        cd source-code
+                        pwd
+                        rsync -avzh * --exclude '.git' ${env.REMOTE_USER}@${env.REMOTE_HOST}:${env.REMOTE_PATH}
+                        """
+
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Deployment completed.'
+        }
+    }
+}
+
+
+------------------------------------pipeline with playbook-----------------------------------
+
+pipeline {
+    agent any
+
+    parameters {
+        choice(name: 'BRANCH_NAME', choices: ['main', 'develop'], description: 'Choose the branch to deploy')
+    }
+
+    environment {
+        REMOTE_HOST = '3.93.190.71'
+        REMOTE_USER = 'ubuntu'
+        //REMOTE_KEY = 'your-private-key-credential-id'
+        REMOTE_PATH = '/home/ubuntu'
+        GIT_CREDENTIALS_ID = '369eff06-5c27-4e0b-8116-597a3d04a3af'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                script {
+                    // Checkout the specified branch using Git credentials
+                    checkout([$class: 'GitSCM', branches: [[name: "${params.BRANCH_NAME}"]],
+                              userRemoteConfigs: [[url: 'https://gitlab.com/naveen51/neogym.git', credentialsId: "${env.GIT_CREDENTIALS_ID}"]]])
+                }
+            }
+        }
+
+        stage('install docker on aws instance') {
+            steps {
+                script {
+                    // install docker on remote aws machine
+                        sh """
+                        ansible-playbook -i ansible/hosts --private-key /var/lib/jenkins/.ssh/aws -u ubuntu ansible/install_docker.yml						
+                        """
+                        
+                }
+            }
+        }
+
+        stage('Deploy to Apache') {
+            steps {
+                script {
+                    // Copy files to the remote Apache server
+                        sh """
+                        rsync -avz  --delete ${WORKSPACE}/ ${env.REMOTE_USER}@${env.REMOTE_HOST}:${env.REMOTE_PATH}
+                        """
+                    
+                }
+            }
+        }
+        
+        stage('run docker container') {
+            steps {
+                script {
+                    // run docker container
+                        sh """
+                        docker pull httpd:latest
+                        docker run -d --name container -p 8080:80 -v /home/ubuntu:/usr/local/apache2/htdocs/ httpd:latest					
+                        """
+                    }
+				}
+            }
+    }
+}
+
+
+
+
+------------------------------pipeline with condiftion on stages------------------
+
+
+
+pipeline {
+    agent any
+
+    parameters {
+        choice(name: 'DEPLOY_ENV', choices: ['development', 'staging', 'production'], description: 'Choose the deployment environment')
+    }
+
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Building...'
+                // Add your build steps here
+            }
+        }
+
+        stage('Test') {
+            steps {
+                echo 'Testing...'
+                // Add your test steps here
+            }
+        }
+
+        stage('Deploy to Development') {
+            when {
+                expression { return params.DEPLOY_ENV == 'development' }
+            }
+            steps {
+                echo 'Deploying to development environment...'
+                // Add your development deployment steps here
+            }
+        }
+
+        stage('Deploy to Staging') {
+            when {
+                expression { return params.DEPLOY_ENV == 'staging' }
+            }
+            steps {
+                echo 'Deploying to staging environment...'
+                // Add your staging deployment steps here
+            }
+        }
+
+        stage('Deploy to Production') {
+            when {
+                expression { return params.DEPLOY_ENV == 'production' }
+            }
+            steps {
+                echo 'Deploying to production environment...'
+                // Add your production deployment steps here
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'This will always run after all stages complete'
+            // Add any cleanup or notification steps here
+        }
+    }
+}
+
+
+
+
+-----------------------------------jenkins pipeline for java maven application-------
+
+what is the plugin in jenkins : it is software installed on jenkins like git plugin 
+
+
+install plugin : Maven Integration plugin
+
+install maven on jenkins server :  apt-get install maven    
+
+root@server1:~# mvn --version
+Apache Maven 3.6.3
+
+
+git repo url : https://gitlab.com/naveen51/java.git
+
+maven build command :  mvn install package or mvn clean install
+
+docker run -d --name my -p 8081:8080 -v /home/myvolume:/usr/local/tomcat/webapps tomcat
+
+
+--------------------------------jenkins job for Maven project----------------------------------------
+
+cd target
+ssh root@192.168.60.96 'rm -rf /mnt/data/my-webapp'
+scp my-webapp.war root@192.168.73.146:/mnt/data
+ssh root@192.168.73.146 'docker stop tomcat'
+ssh root@192.168.73.146 'docker rm tomcat'
+ssh root@192.168.73.146 'docker run -d --name tomcat -p 8080:8080 -v /mnt/data:/usr/local/tomcat/webapps tomcat'
+
+
+------------------------------------------------jenkins pipeline for maven--------------------------------------------------
+
+
+pipeline {
+    agent any
+    
+    tools {
+        maven '3.6.3' // Name of the Maven installation in Jenkins
+    }
+
+    parameters {
+        choice(name: 'BRANCH_NAME', choices: ['master', 'develop', 'feature'], description: 'Choose the branch to deploy')
+    }
+
+    environment {
+        REMOTE_HOST = '192.168.73.146'
+        REMOTE_USER = 'root'
+        //REMOTE_KEY = 'your-private-key-credential-id'
+        REMOTE_PATH = '/mnt/data'
+        GIT_CREDENTIALS_ID = '369eff06-5c27-4e0b-8116-597a3d04a3af'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                script {
+                    // Checkout the specified branch using Git credentials
+                    checkout([$class: 'GitSCM', branches: [[name: "${params.BRANCH_NAME}"]],
+                              userRemoteConfigs: [[url: 'https://gitlab.com/naveen51/java.git', credentialsId: "${env.GIT_CREDENTIALS_ID}"]]])
+                }
+            }
+        }
+        
+        stage('Build') {
+            steps {
+                // Build the project using Maven
+                sh 'mvn clean package'
+            }
+        }
+
+        stage('Deploy to tomcat') {
+            steps {
+                script {
+                    // Copy files to the remote Apache server
+                        sh """
+                        cd target
+                        rsync -avz my-webapp.war  ${env.REMOTE_USER}@${env.REMOTE_HOST}:${env.REMOTE_PATH}
+                        ssh root@192.168.73.146 'docker stop tomcat'
+                        ssh root@192.168.73.146 'docker rm tomcat'
+                        ssh root@192.168.73.146 'docker run -d --name tomcat -p 8080:8080 -v /mnt/data:/usr/local/tomcat/webapps tomcat'
+
+                        """
+                    
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Deployment completed.'
+        }
+    }
+}
+
+
+
+
+#Nodejs web application deployment 
+----------------------------------------------
+How to deploy nodejs application without docker
+
+1: install node nd npm on the server and check the version of node and npm
+
+cd ~
+curl -sL https://deb.nodesource.com/setup_16.x -o /tmp/nodesource_setup.sh
+nano /tmp/nodesource_setup.sh
+sudo bash /tmp/nodesource_setup.sh
+sudo apt install nodejs
+node -v
+npm -v
+
+2 : npm install (install all dependency of project)
+3 : npm run build 
+4  npm start like server.js or main.js
+5 : running on 3000 
+
+
+-------------------------------Create a playbook for install nodejs on remote ubuntu machine
+
+create a file install_nodejs.yml
+
+---
+- name: Install Node.js on remote machines
+  hosts: cloud
+  become: yes
+  tasks:
+    - name: Update apt-get
+      apt:
+        update_cache: yes
+
+    - name: Install required dependencies
+      apt:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - curl
+        - software-properties-common
+
+    - name: Add NodeSource repository for Node.js
+      shell: curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+
+    - name: Install Node.js
+      apt:
+        name: nodejs
+        state: present
+
+    - name: Verify Node.js installation
+      command: node -v
+      register: node_version
+
+    - name: Display Node.js version
+      debug:
+        msg: "Node.js version is {{ node_version.stdout }}"
+
+
+
+-------------------------------------------------------------------------------------------------------
+How to deploy nodejs application with docker with pipeline
+
+
+pipeline {
+    agent any
+    
+
+    parameters {
+        choice(name: 'BRANCH_NAME', choices: ['master', 'develop', 'feature'], description: 'Choose the branch to deploy')
+    }
+
+    environment {
+        REMOTE_HOST = '192.168.73.146'
+        REMOTE_USER = 'root'
+        //REMOTE_KEY = 'your-private-key-credential-id'
+        REMOTE_PATH = '/mnt/data'
+        GIT_CREDENTIALS_ID = '369eff06-5c27-4e0b-8116-597a3d04a3af'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                script {
+                    // Checkout the specified branch using Git credentials
+                    checkout([$class: 'GitSCM', branches: [[name: "${params.BRANCH_NAME}"]],
+                              userRemoteConfigs: [[url: 'https://gitlab.com/naveen51/node_project.git', credentialsId: "${env.GIT_CREDENTIALS_ID}"]]])
+                }
+            }
+        }
+        
+        stage('build docker images') {
+            steps {
+                // Build the project using Maven
+                sh 'docker build -t my-node-image .'
+            }
+        }
+
+        stage('deployment') {
+            steps {
+                script {
+                    // Copy files to the remote Apache server
+                        sh """
+                        docker tag my-node-image:latest 342353/my-node-image:latest
+                        docker push 342353/my-node-image:latest
+                        ssh root@192.168.73.146 'docker pull 342353/my-node-image:latest'
+                        ssh root@192.168.73.146 'docker run -d --name my-node-container -p 4000:3000 342353/my-node-image:latest'
+                        
+
+                        """
+                    
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Deployment completed.'
+        }
+    }
+}
+
+
+
+
+
+
+
+------------------------------------------host wordpress on ubuntu machine------------------
+
+
+apt-get install apache2
+
+systemctl status apache2
+
+sudo ufw allow 80 and allow port in securtiy group of EC2 instance
+
+sudo apt install mysql-server or sudo apt-get install mysql-server
+
+sudo mysql
+
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password;
+
+mysql_secure_installation
+
+sudo apt install php libapache2-mod-php php-mysql
+
+
+
+

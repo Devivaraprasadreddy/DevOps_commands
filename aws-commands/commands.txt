@@ -1,0 +1,31 @@
+--------------------------------------aws cli and IAM service--------------------------------------
+
+what is aws cli : command line interface to mamage aws account 
+
+IAM service :  access for aws services and resource
+
+resource : which you create in the service like ec2 instance in ec2 service 
+
+create a IAM user and create access id and secret access key 
+
+install aws cli on windows machine or mac
+
+aws --version
+
+aws configure
+
+
+EC2 command: 
+aws ec2 describe-instances
+aws ec2 start-instances --instance-ids i-1234567890abcdef0
+aws ec2 stop-instances --instance-ids i-1234567890abcdef0
+aws ec2 terminate-instances --instance-ids i-1234567890abcdef0
+aws ec2 run-instances --image-id ami-053b0d53c279acc90 --instance-type t2.micro --key-name my-key--security-group-ids sg-0cf6020b80ee393dc --subnet-id subnet-04a1f07fede2d4cce
+
+aws ec2 run-instances --image-id ami-0c7217cdde317cfec --instance-type t2.micro --key-name my-new-aws --security-group-ids sg-0cf6020b80ee393dc  --subnet-id subnet-04a1f07fede2d4cce
+
+
+IAM command: 
+aws iam delete-user --user-name user_to_delete
+
+aws iam create-user --user-name new_user

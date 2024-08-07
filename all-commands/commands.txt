@@ -1,0 +1,197 @@
+---------------Docker------------
+* install docker using commands, it will be there in docker-commands folder
+
+
+
+docker installation on ubuntu machine 
+apt-get update
+sudo apt install apt-transport-https ca-certificates curl software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
+
+sudo apt install docker-ce
+
+docker --version
+docker info
+
+
+------------------------------------------
+*Dockerfile
+vi Dockerfile
+
+*Build image
+docker build -t <image_name : latest> .
+
+*Run Container
+docker run -d --name <container_name> -p <port number>:80 -v <mapped volumes> <image_name : latest>
+
+*Volumes checking
+docker volume ls
+
+* Images checking
+docker images
+
+* Image deletion
+docker rmi -f <image_name>
+
+*Containers checking
+docker ps
+docker ps -a
+docker exec -it <conatier-id> bash
+
+*Container stop
+docker stop <container_id> or <container_name>
+
+*Container remove
+docker rm <container_id> or <container_name>
+
+*check docker status
+systemctl status docker
+
+*Start Docker
+systemctl start docker
+
+*Restart Docker
+systemctl restart docker
+
+*Stop Docker
+systemctl stop docker
+
+*Enable Docker
+systemctl enable docker
+
+*Disable Docker
+systemctl disable docker
+
+
+*Docker compose running command
+docker-compose up -d
+
+* push the images to docker hub
+docker tag <image_name>:latest <username>/dockerhub:<give_some_name>
+
+docker push <username>/dockerhub:<above given name>
+
+docker pull <username>/dockerhub:<given_name>
+
+
+* Clear some space in docker
+docker system prune -a
+docker system prune
+
+--------------------Apache2------------------
+* Install apache2 using commands, it will be there in apache2-commands folder
+apt-get update
+apt-get install apache2
+apache2 -version
+
+* Start Apache2
+systemctl start apache2
+
+* Stop Apache2
+systemctl stop apache2
+
+* Restart apache2
+systemctl restart apache
+
+* Apache2 enabled
+systemctl enable apache2
+
+* Apache2 disabled
+systemctl disable apache2
+
+* check the status if apache2
+netstat -tunlp
+
+----------------------------Git---------------------------------------
+
+brew install git
+git init
+git remote add origin <gitlab_repo url>
+git add .
+git commit -m "<statements>"
+git push --set-upstream origin main
+git push origin main
+git checkout -b <branch_name>
+git branch
+git checkout <branch_name>
+git push origin <branch_name>
+
+git merge <branch_name>
+git status
+git branch -a
+
+
+
+--------------------------Ansible-----------------------------------
+
+* Install ansible using commands, it will be there in ansible-commands folder
+apt-get update
+apt-get install software-properties-common
+sudo add-apt-repository --yes --update ppa:ansible/ansible
+
+sudo apt install ansible
+
+ansible --version
+
+
+
+* Change hostname
+hostnamectl sethostname <hostname>
+* It will be change to hostname
+bash
+
+* check hostname
+hostname
+
+
+
+ssh root@<ip address>
+ssh-keygen
+ssh-copy-id root@<ipaddress>
+
+ansible all -m ping
+
+
+vi /etc/ssh/sshd_config
+systemctl restart ssh
+: wq
+
+
+vi /etc/ansible/hosts
+
+ansible-inventory --list -y
+
+ansible all -m command -a "free -m"
+
+ansible <host_group_name>  -m command -a "apt-get install zip -y"
+
+scp <filename> root@<ip address>:/home{path}
+
+df -h {size}
+
+du -csh * {it shows all files data}
+
+ansible local -m apt -a "name=zip state=present"
+
+state=absent {it will delete}
+
+
+ansible-playbook <filename.yml>
+
+-----------------Tomcat-------------------------
+
+
+---------------zip-------------
+apt install zip
+apt install unzip
+
+zip -r <file_name> -i <folder_name>
+
+
+---------------
+
+
+
+
